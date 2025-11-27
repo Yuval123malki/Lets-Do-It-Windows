@@ -4,7 +4,6 @@
 ![React](https://img.shields.io/badge/React-19-blue?logo=react)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue?logo=typescript)
 ![AI](https://img.shields.io/badge/AI-Gemini%202.5%20Flash-orange?logo=google)
-![License](https://img.shields.io/badge/License-MIT-green)
 
 **Lets Do It Windows** is a professional, browser-based Digital Forensics and Incident Response (DFIR) documentation and assistant tool. 
 
