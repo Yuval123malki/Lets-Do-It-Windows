@@ -159,8 +159,19 @@ export const generateFinalReport = async (caseData: CaseData): Promise<string> =
 Create or edit `.env` in the project root:
 
 ```env
-REACT_APP_AI_ENDPOINT=http://localhost:11434/v1
-REACT_APP_AI_MODEL=llama3
+# .env
+
+# Base URL for Open WebUI API (Add /api/v1 suffix)
+# If using Ollama directly, this might be http://localhost:11434/v1
+AI_BASE_URL=http://localhost:3000/api/v1
+
+# The API Key generated in Open WebUI settings
+# If using Ollama directly, use 'ollama' as the key
+AI_API_KEY=sk-your-generated-open-webui-key
+
+# The specific model you want to use (must match the tag in your local setup)
+# Example: 'llama3:latest', 'mistral', 'deepseek-r1'
+AI_MODEL_NAME=llama3:latest
 ```
 
 -----
