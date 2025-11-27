@@ -1,9 +1,13 @@
 
 # 🕵️‍♂️ Lets Do It Windows
 
-![React](https://img.shields.io/badge/React-19-blue?logo=react)
-![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue?logo=typescript)
-![AI](https://img.shields.io/badge/AI-Gemini%202.5%20Flash-orange?logo=google)
+![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=black)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.0-3178C6?logo=typescript&logoColor=white)
+![AI](https://img.shields.io/badge/AI-Gemini%202.5%20Flash-8E75B2?logo=google&logoColor=white)
+![Local AI](https://img.shields.io/badge/Local_AI-Open_WebUI-333333?logo=server&logoColor=white)
+![DFIR](https://img.shields.io/badge/DFIR-FF0000)
+![Malware Analysis](https://img.shields.io/badge/Malware%20Analysis-8B0000)
+![Computer Forensics](https://img.shields.io/badge/Computer%20Forensics-005A9C)
 
 **Lets Do It Windows** is a professional, browser-based Digital Forensics and Incident Response (DFIR) documentation and assistant tool. 
 
