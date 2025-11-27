@@ -118,7 +118,7 @@ This requires a slight code refactor to switch from the Google SDK to an OpenAI-
 2.  Point your environment variables to your local server (e.g., `http://localhost:3000/api/v1`).
 3.  Update `geminiService.ts` to generic chat completions.
 
-👉 **[Read the full Step-by-Step Migration Guide here]([https://github.com/Yuval123malki/Lets-Do-It-Windows/blob/main/LOCAL_LLM_SETUP.md](https://github.com/Yuval123malki/Lets-Do-It-Windows/blob/main/OFFLINE_DEPLOYMENT.md))**
+👉 **[Read the full Step-by-Step Migration Guide here](https://github.com/Yuval123malki/Lets-Do-It-Windows/blob/main/OFFLINE_DEPLOYMENT.md)**
 
 ### 4\. Run the application
 
