@@ -1,0 +1,5 @@
+{
+  "name": "Lets Do It Windows",
+  "description": "A professional digital forensics and incident response documentation tool. Guides analysts through OS analysis, artifacts, memory, and malware analysis with Gemini-powered insights.",
+  "requestFramePermissions": []
+}
