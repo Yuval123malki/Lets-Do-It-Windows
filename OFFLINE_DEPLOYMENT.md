@@ -228,5 +228,3 @@ export const generateFinalReport = async (caseData: CaseData): Promise<string> =
 
 <!-- end list -->
 
-```
-```
