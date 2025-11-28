@@ -70,11 +70,13 @@ const buildPrompt = (caseData: CaseData): string => {
 };
 
 export const analyzeCase = async (caseData: CaseData): Promise<any> => {
-  if (!process.env.API_KEY) {
-    throw new Error("API Key is missing. Please set process.env.API_KEY.");
+
+  if (!import.meta.env.VITE_GEMINI_API_KEY) {
+    throw new Error("API Key is missing. Please set VITE_GEMINI_API_KEY in .env");
   }
 
-  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+  const ai = new GoogleGenAI({ apiKey: import.meta.env.VITE_GEMINI_API_KEY });
+
   
   try {
     const prompt = buildPrompt(caseData);
@@ -98,11 +100,12 @@ export const analyzeCase = async (caseData: CaseData): Promise<any> => {
 };
 
 export const generateFinalReport = async (caseData: CaseData): Promise<string> => {
-  if (!process.env.API_KEY) {
-    throw new Error("API Key is missing.");
-  }
+  if (!import.meta.env.VITE_GEMINI_API_KEY) {
+  throw new Error("API Key is missing. Please set VITE_GEMINI_API_KEY in .env");
+}
 
-  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+const ai = new GoogleGenAI({ apiKey: import.meta.env.VITE_GEMINI_API_KEY });
+
 
   const findingsList = Object.entries(caseData.findings).map(([stepId, finding]) => {
     const step = FORENSIC_STEPS.find(s => s.id === stepId);
