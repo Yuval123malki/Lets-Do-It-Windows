@@ -46,7 +46,7 @@ echo (Leave this window OPEN to keep the server running)
 echo.
 
 :: Run vite dev server
-start "" http://localhost:5173
+start "" http://localhost:3000
 
 call npm run dev
 
