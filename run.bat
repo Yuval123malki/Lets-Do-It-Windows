@@ -14,14 +14,14 @@ if /i "%answer%"=="Y" (
 )
 
 echo ------------------------------------------------------
-echo   🚀 Launching Lets-Do-It-Windows (Vite Dev Server)
+echo    Launching Lets-Do-It-Windows (Vite Dev Server)
 echo ------------------------------------------------------
 echo.
 
 :: Check Node.js installation
 where node >nul 2>nul
 if %errorlevel% neq 0 (
-    echo ❌ Node.js is not installed.
+    echo X Node.js is not installed.
     echo Download it from: https://nodejs.org
     pause
     exit /b
@@ -29,19 +29,19 @@ if %errorlevel% neq 0 (
 
 :: Install dependencies if needed
 if not exist node_modules (
-    echo 📦 Installing dependencies...
+    echo Installing dependencies...
     call npm install
     if %errorlevel% neq 0 (
-        echo ❌ npm install failed. Fix the errors above.
+        echo X npm install failed. Fix the errors above.
         pause
         exit /b
     )
 ) else (
-    echo 📦 Dependencies already installed.
+    echo Dependencies already installed.
 )
 
 echo.
-echo ▶️ Starting Vite dev server...
+echo Starting Vite dev server...
 echo (Leave this window OPEN to keep the server running)
 echo.
 
@@ -51,6 +51,6 @@ start "" http://localhost:3000
 call npm run dev
 
 echo.
-echo ❌ Dev server stopped or crashed.
+echo X Dev server stopped or crashed.
 echo Check the error above.
 pause
