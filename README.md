@@ -87,22 +87,16 @@ git clone [https://github.com/yourusername/lets-do-it-windows.git](https://githu
 cd lets-do-it-windows
 ````
 
-### 2\. Install dependencies
-
-```bash
-npm install
-```
-
-### 3\. Choose your AI Backend
+### 2\. Choose your AI Backend
 
 #### Option A: Standard Setup (Google Gemini Cloud)
 
 *Best for easy setup and high-quality responses.*
 
 1.  Get an API Key from [Google AI Studio](https://aistudio.google.com/).
-2.  Create a `.env` file in the root directory:
+2.  add your APIKEY in the  `.env` file in the root directory:
     ```env
-    REACT_APP_GEMINI_API_KEY=your_api_key_here
+    VITE_GEMINI_API_KEY=<your-api-key>
     ```
 
 #### Option B: Offline / Local LLM Setup (Privacy Focused)
@@ -124,7 +118,7 @@ This requires a slight code refactor to switch from the Google SDK to an OpenAI-
 ### 4\. Run the application
 
 ```bash
-npm start
+./run.bat
 ```
 
 Open [http://localhost:3000](https://www.google.com/search?q=http://localhost:3000) to view it in the browser.
