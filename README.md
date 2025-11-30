@@ -83,8 +83,8 @@ The application works fully offline for documentation, manual analysis, and repo
 
 ### 1. Clone the repository
 ```bash
-git clone [https://github.com/yourusername/lets-do-it-windows.git](https://github.com/yourusername/lets-do-it-windows.git)
-cd lets-do-it-windows
+git clone https://github.com/Yuval123malki/Lets-Do-It-Windows/
+cd Lets-Do-It-Windows
 ````
 
 ### 2\. Choose your AI Backend
