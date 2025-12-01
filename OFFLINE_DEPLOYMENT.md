@@ -111,6 +111,9 @@ Choose the option matching your preparation.
     open-webui serve
     ```
 
+#### Dont Forget to Enable API Keys:
+user profile -> admin console -> settings -> general -> in "Authontication" section find "Enable API Keys"
+
 ---
 
 ## 🔐 Phase 3: Project Configuration
