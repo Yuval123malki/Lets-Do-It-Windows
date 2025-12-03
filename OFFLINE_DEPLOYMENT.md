@@ -323,7 +323,7 @@ INSTRUCTIONS:
 
 1.  Ensure **Ollama** is running.
 2.  Ensure **Open WebUI** is running (Docker container OR `open-webui serve`).
-3.  Start your app: **run.bat**
+3.  Launch the app by running `run.bat` from the main folder.
 -----
 
 ## 🐛 Troubleshooting
