@@ -12,8 +12,9 @@ export default defineConfig(({ mode }) => {
       plugins: [react()],
       define: {
         'process.env.API_KEY': JSON.stringify(env.GEMINI_API_KEY),
-        'process.env.GEMINI_API_KEY': JSON.stringify(env.GEMINI_API_KEY)
-         // For Offline Use:
+        'process.env.GEMINI_API_KEY': JSON.stringify(env.GEMINI_API_KEY),
+        
+        // Local AI Variables
         'process.env.AI_BASE_URL': JSON.stringify(env.AI_BASE_URL),
         'process.env.AI_API_KEY': JSON.stringify(env.AI_API_KEY),
         'process.env.AI_MODEL_NAME': JSON.stringify(env.AI_MODEL_NAME)
