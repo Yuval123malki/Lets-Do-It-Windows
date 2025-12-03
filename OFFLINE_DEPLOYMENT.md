@@ -141,9 +141,9 @@ AI_API_KEY=sk-your-generated-key
 AI_MODEL_NAME=llama3
 ````
 
-### 2\. Update Service Code (`src/services/aiService.ts`)
+### 2\. Update Service Code (`Lets-Do-It-Windows-main\services\geminiService.ts`)
 
-Copy the following code to replace `aiService.ts`. This ensures robust handling of local AI responses.
+Copy the following code to replace `geminiService.ts`. This ensures robust handling of local AI responses.
 
 ```typescript
 import { CaseData, ForensicStep } from "../types";
