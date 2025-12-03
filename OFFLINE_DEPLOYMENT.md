@@ -146,61 +146,175 @@ AI_MODEL_NAME=llama3
 Copy the following code to replace `aiService.ts`. This ensures robust handling of local AI responses.
 
 ```typescript
-import OpenAI from "openai";
-import { CaseData } from "../types";
+import { CaseData, ForensicStep } from "../types";
+import { FORENSIC_STEPS } from "../constants";
 
+// Helper to format structured data for the prompt
+const formatAnalystData = (data: CaseData['analystData']) => {
+    if (!data) return { tasks: "N/A", timeline: "N/A", iocs: "N/A" };
+
+    const tasks = Array.isArray(data.tasks) 
+        ? data.tasks.map(t => `- [${t.completed ? 'X' : ' '}] ${t.text}`).join('\n')
+        : "N/A";
+
+    const timeline = Array.isArray(data.timeline)
+        ? data.timeline
+            .sort((a, b) => new Date(`${a.date} ${a.time}`).getTime() - new Date(`${b.date} ${b.time}`).getTime())
+            .map(t => `[${t.date} ${t.time}] ${t.description}`).join('\n')
+        : "N/A";
+
+    const iocs = Array.isArray(data.iocs)
+        ? data.iocs.map(i => `- ${i.text}`).join('\n')
+        : "N/A";
+
+    return { tasks, timeline, iocs };
+};
+
+// Helper to construct the context prompt
+const buildPrompt = (caseData: CaseData): string => {
+    const findingsList = Object.entries(caseData.findings).map(([stepId, finding]) => {
+        const step = FORENSIC_STEPS.find(s => s.id === stepId);
+        return `
+---
+STEP: ${step ? step.title : stepId}
+FINDING: ${finding}
+---`;
+    }).join('\n');
+
+    const { tasks, timeline, iocs } = formatAnalystData(caseData.analystData);
+
+    return `
+Act as a Senior Digital Forensics and Incident Response (DFIR) Expert.
+Review the following investigation notes for Case ID: ${caseData.caseId}, Analyst: ${caseData.analystName}.
+
+ANALYST NOTES:
+${caseData.analystData?.notes || "N/A"}
+
+TASKS:
+${tasks}
+
+MANUAL TIMELINE EVENTS:
+${timeline}
+
+INDICATORS OF COMPROMISE (IOCs):
+${iocs}
+
+INVESTIGATION DATA:
+${findingsList.length > 0 ? findingsList : "No findings recorded yet."}
+
+Based strictly on the provided findings, generate a JSON response with the following structure:
+{
+  "summary": "A professional executive summary of the incident based on findings.",
+  "threatLevel": "Low | Medium | High | Critical",
+  "keyIndicators": ["List of potential IOCs found"],
+  "gapAnalysis": ["List of forensic steps that appear missing or incomplete based on the standard process"],
+  "recommendations": ["Specific next steps to take"]
+}
+
+Do not output Markdown formatting for the JSON. Just the raw JSON string.
+`;
+};
+
+// Internal helper to get API URL and key from environment
 const getAIClient = () => {
-  if (!process.env.AI_API_KEY || !process.env.AI_BASE_URL) {
-    throw new Error("AI Configuration missing. Check .env file.");
-  }
-  return new OpenAI({
-    baseURL: process.env.AI_BASE_URL,
-    apiKey: process.env.AI_API_KEY,
-    dangerouslyAllowBrowser: true 
-  });
+    if (!process.env.AI_API_KEY || !process.env.AI_BASE_URL) {
+        throw new Error("AI configuration missing. Check your .env file.");
+    }
+    return {
+        url: process.env.AI_BASE_URL.replace(/\/v1$/, ""), // remove /v1 if present
+        key: process.env.AI_API_KEY
+    };
 };
 
 export const analyzeCase = async (caseData: CaseData): Promise<any> => {
-  const openai = getAIClient();
-  
-  // Prompt engineering for local models to ensure JSON
-  const prompt = `Analyze this forensic case. Output strictly valid JSON. Do not use Markdown blocks. Case Data: ${JSON.stringify(caseData)}`;
+    const client = getAIClient();
+    const prompt = buildPrompt(caseData);
 
-  try {
-    const completion = await openai.chat.completions.create({
-      model: process.env.AI_MODEL_NAME || "llama3",
-      messages: [
-        { role: "system", content: "You are a forensic expert. Output JSON only." },
-        { role: "user", content: prompt }
-      ],
-      response_format: { type: "json_object" }, 
-      temperature: 0.2, 
-    });
+    try {
+        const res = await fetch(`${client.url}/chat/completions`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${client.key}`
+            },
+            body: JSON.stringify({
+                model: process.env.AI_MODEL_NAME || "llama3:latest",
+                messages: [
+                    { role: "system", content: "You are a forensic expert. Output JSON only." },
+                    { role: "user", content: prompt }
+                ],
+                temperature: 0.2
+            })
+        });
 
-    const text = completion.choices[0].message.content;
-    if (!text) return {};
-    return JSON.parse(text);
+        const data = await res.json();
+        const text = data?.choices?.[0]?.message?.content;
+        if (!text) return {};
 
-  } catch (error) {
-    console.error("Local AI Error:", error);
-    throw error;
-  }
+        try {
+            return JSON.parse(text);
+        } catch {
+            return { error: "Invalid JSON output", raw: text };
+        }
+
+    } catch (error) {
+        console.error("Local AI Error:", error);
+        throw error;
+    }
 };
 
 export const generateFinalReport = async (caseData: CaseData): Promise<string> => {
-  const openai = getAIClient();
-  const prompt = `Write a professional forensic report for Case ${caseData.caseId}. Summarize findings.`;
+    const client = getAIClient();
 
-  try {
-    const completion = await openai.chat.completions.create({
-      model: process.env.AI_MODEL_NAME || "llama3",
-      messages: [{ role: "user", content: prompt }],
-    });
-    return completion.choices[0].message.content || "Report generation failed.";
-  } catch (error) {
-    return "Error connecting to Local AI.";
-  }
+    const findingsList = Object.entries(caseData.findings).map(([stepId, finding]) => {
+        const step = FORENSIC_STEPS.find(s => s.id === stepId);
+        return `Step: ${step ? step.title : stepId}\nRaw Findings: ${finding}`;
+    }).join('\n\n');
+
+    const { tasks, timeline, iocs } = formatAnalystData(caseData.analystData);
+
+    const prompt = `
+Act as a Forensic Report Editor. Generate the final report for Case ${caseData.caseId}.
+
+INPUT DATA:
+1. Analyst Notes: ${caseData.analystData?.notes}
+2. Tasks Status: 
+${tasks}
+3. IOCs (Indicators of Compromise): 
+${iocs}
+4. Manual Timeline Events: 
+${timeline}
+5. Technical Findings:
+${findingsList}
+
+INSTRUCTIONS:
+- Clean the analysis: Rewrite the findings professionally and concisely.
+- Auto-generate a Chronological Timeline: Merge timestamps from Technical Findings and Manual Timeline.
+- Output a standard Markdown report structure.
+`;
+
+    try {
+        const res = await fetch(`${client.url}/chat/completions`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${client.key}`
+            },
+            body: JSON.stringify({
+                model: process.env.AI_MODEL_NAME || "llama3:latest",
+                messages: [{ role: "user", content: prompt }],
+                temperature: 0.2
+            })
+        });
+
+        const data = await res.json();
+        return data?.choices?.[0]?.message?.content || "Failed to generate report.";
+    } catch (error) {
+        console.error("Local AI Report Error:", error);
+        return "Error generating AI report.";
+    }
 };
+
 ```
 
 -----
@@ -209,12 +323,7 @@ export const generateFinalReport = async (caseData: CaseData): Promise<string> =
 
 1.  Ensure **Ollama** is running.
 2.  Ensure **Open WebUI** is running (Docker container OR `open-webui serve`).
-3.  Start your app:
-    ```bash
-    npm start
-    ```
-4.  **Connect:** Open browser to `http://localhost:3000` (or `8080` for Open WebUI directly) to create your admin account and generate your API Key.
-
+3.  Start your app: **run.bat**
 -----
 
 ## 🐛 Troubleshooting
