@@ -138,7 +138,7 @@ AI_BASE_URL=http://localhost:3000/api/v1
 AI_API_KEY=sk-your-generated-key
 
 # --- MODEL NAME ---
-AI_MODEL_NAME=llama3
+AI_MODEL_NAME=llama3:latest
 ````
 
 ### 2\. Update Service Code (`Lets-Do-It-Windows-main\services\geminiService.ts`)
